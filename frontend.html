@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./frontend.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+    <title>Document</title>
+</head>
+<body>
+    <div class="main-container">
+        <div class="main-header-container">
+            <div class="main-header">
+                Hệ Thống CRM
+            </div>
+            <div class="sub-header" >
+                Nhóm ABCXYZ
+            </div>
+        </div>
+        <div class="main-content-container">
+            <div class="content-header-container">
+                <div class="content-header">
+                    Tra Cứu Dữ Liệu
+                </div>
+            </div>
+            <div class="content-header-container">
+                <div class="option-container">
+                    <select name="table" id="tableOption">
+                        <option value="customer">Khách Hàng Thân Thiết</option>
+                        <option value="company">Doanh Nghiệp</option>
+                        <option value="employee">Nhân Viên</option>
+                        <option value="product_service">Sản Phẩm</option>
+                    </select>
+                </div>
+                <div class="input-container">
+                    <input class="order-input" id="order-input-id"type="text" name="order-code" placeholder="Nhập giá trị cần truy vấn">
+                </div>
+                <div class="none-responsive-btn">
+                    <button class="tracking-btn" type="button" onclick="get_data()">
+                        <div class="loader"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+                        TRA CỨU
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        <table id="table"></table>
+        <div class="button">
+            <button class="tracking-btn" type="button" onclick="get_data()">
+                <div class="loader"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+                THÊM
+            </button>
+        </div>
+        
+    </div>
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            Chi tiết
+            <div class="modal-detail">
+                <div class="modal-sub-detail" id="sub1"></div>
+                <div class="modal-sub-detail" id="sub2"></div>
+            </div>
+            <table id="table-detail"></table>
+            <div class="button-container">
+                <button class="tracking-btn" type="button">XÓA</button>
+                <button class="tracking-btn" type="button">CẬP NHẬT</button>
+            </div>
+        </div>
+    </div>
+    <script src="./frontend.js"></script> 
+</body>
+</html>
