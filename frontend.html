@@ -35,9 +35,9 @@
                     </select>
                 </div>
                 <div class="input-container">
-                    <input class="order-input" id="order-input-id"type="text" name="order-code" placeholder="Nhập giá trị cần truy vấn">
+                    <input id="order-input-id"type="text" name="order-code" placeholder="Nhập giá trị cần truy vấn">
                 </div>
-                <div class="none-responsive-btn">
+                <div>
                     <button class="tracking-btn" type="button" onclick="get_data()">
                         <div class="loader"><i class="fa fa-circle-o-notch fa-spin"></i></div>
                         TRA CỨU
@@ -48,7 +48,7 @@
         </div>
         <table id="table"></table>
         <div class="button">
-            <button class="tracking-btn" type="button" onclick="get_data()">
+            <button class="tracking-btn" id="addbtn" type="button" name="add" value="" onclick="detail_input(this)">
                 <div class="loader"><i class="fa fa-circle-o-notch fa-spin"></i></div>
                 THÊM
             </button>
@@ -68,7 +68,24 @@
             <table id="table-detail"></table>
             <div class="button-container">
                 <button class="tracking-btn" type="button">XÓA</button>
-                <button class="tracking-btn" type="button">CẬP NHẬT</button>
+                <button class="tracking-btn" type="button" id="updatebtn"name="update" value="" onclick="detail_input(this)">CẬP NHẬT</button>
+            </div>
+        </div>
+    </div>
+    <div id="inputModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            Chi tiết
+            <div class="modal-detail">
+                <div class="modal-sub-detail" id="inputsub1"></div>
+                <div class="modal-sub-detail" id="inputsub2"></div>
+            </div>
+            <table id="table-detail"></table>
+            <div class="button-container">
+                <button class="tracking-btn" type="button">HỦY</button>
+                <button class="tracking-btn" type="button"id="confirmbtn" value="yes" onclick="">XÁC NHẬN</button>
             </div>
         </div>
     </div>
