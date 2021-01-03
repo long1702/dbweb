@@ -1,14 +1,59 @@
-var list = [{"COMPANY_ID":10,"COMPANY_NAME":"Shopee","REPRESENTATIVE_NAME":"Thinh","REPRESENTATIVE_CMND":"123456789","REPRESENTATIVE_PHONE":"0123456789","REPRESENTATIVE_EMAIL":"abc@abc","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Shopping"},{"COMPANY_ID":11,"COMPANY_NAME":"Lazada","REPRESENTATIVE_NAME":"Anh","REPRESENTATIVE_CMND":"123456788","REPRESENTATIVE_PHONE":"0123456788","REPRESENTATIVE_EMAIL":"abc@abc1","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Shopping"},{"COMPANY_ID":12,"COMPANY_NAME":"Viettin","REPRESENTATIVE_NAME":"Binh","REPRESENTATIVE_CMND":"123456787","REPRESENTATIVE_PHONE":"0123456787","REPRESENTATIVE_EMAIL":"abc@abc2","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Bank"},{"COMPANY_ID":13,"COMPANY_NAME":"Agri","REPRESENTATIVE_NAME":"Ngo","REPRESENTATIVE_CMND":"123456786","REPRESENTATIVE_PHONE":"0123456786","REPRESENTATIVE_EMAIL":"abc@abc3","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Bank"},{"COMPANY_ID":14,"COMPANY_NAME":"Kichi","REPRESENTATIVE_NAME":"Ga","REPRESENTATIVE_CMND":"123456785","REPRESENTATIVE_PHONE":"0123456785","REPRESENTATIVE_EMAIL":"abc@abc4","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Food"}]
-var cols = []; 
+var list =[]//= [{"COMPANY_ID":10,"COMPANY_NAME":"Shopee","REPRESENTATIVE_NAME":"Thinh","REPRESENTATIVE_CMND":"123456789","REPRESENTATIVE_PHONE":"0123456789","REPRESENTATIVE_EMAIL":"abc@abc","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Shopping"},{"COMPANY_ID":11,"COMPANY_NAME":"Lazada","REPRESENTATIVE_NAME":"Anh","REPRESENTATIVE_CMND":"123456788","REPRESENTATIVE_PHONE":"0123456788","REPRESENTATIVE_EMAIL":"abc@abc1","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Shopping"},{"COMPANY_ID":12,"COMPANY_NAME":"Viettin","REPRESENTATIVE_NAME":"Binh","REPRESENTATIVE_CMND":"123456787","REPRESENTATIVE_PHONE":"0123456787","REPRESENTATIVE_EMAIL":"abc@abc2","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Bank"},{"COMPANY_ID":13,"COMPANY_NAME":"Agri","REPRESENTATIVE_NAME":"Ngo","REPRESENTATIVE_CMND":"123456786","REPRESENTATIVE_PHONE":"0123456786","REPRESENTATIVE_EMAIL":"abc@abc3","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Bank"},{"COMPANY_ID":14,"COMPANY_NAME":"Kichi","REPRESENTATIVE_NAME":"Ga","REPRESENTATIVE_CMND":"123456785","REPRESENTATIVE_PHONE":"0123456785","REPRESENTATIVE_EMAIL":"abc@abc4","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Food"}]
+var ip = 'http://192.168.137.1:3000/'
+$( document ).ready(function() {
+    get_table()
+});
+$('select').on('change', function() {
+    cols = []
+    $("#orderInput").val("")
+    get_table()
+});
+function get_table(){
 
-for (var i = 0; i < list.length; i++) { 
-    for (var k in list[i]) { 
-        if (cols.indexOf(k) === -1) { 
-            // Push all keys to the array 
-            cols.push(k); 
-        } 
-    } 
+    $('.loader').css("display", "inline")
+    $('.none-loader').css("display", "none")  
+    body = {}
+    body["table_name"]= document.getElementById("tableOption").value;
+    value = document.getElementById("orderInput").value
+    if (value == ""){
+        body["data"] = ""
+    }
+    else{
+        subbody = {}
+        if (document.getElementById("tableOption").value == "product_service"){
+            subbody["NAME"] = value
+        }
+        else{
+            subbody[cols[1]] = value
+        }
+        body["data"] = subbody
+    }
+    
+    
+    var req = new XMLHttpRequest();
+
+    console.log(body)
+    req.open("POST", ip+"select");
+    req.setRequestHeader("Access-Control-Allow-Origin", "*")
+    req.setRequestHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+    req.setRequestHeader("Access-Control-Allow-Headers","X-PINGOTHER, Content-Type")
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    console.log(JSON.stringify(body))
+    req.send(JSON.stringify(body));
+    req.onload = function () {
+        console.log(req);
+        console.log(JSON.parse(req.responseText));
+        list = JSON.parse(req.responseText)[0] 
+        get_data(list)
+        setTimeout(function(){ hide_loader(); } , 1000);
+    };
 } 
+
+function hide_loader(){
+    $('.loader').css("display", "none")
+    $('.none-loader').css("display", "inline")
+}
+var cols = []; 
 var modal = document.getElementById("myModal");
 var input_modal = document.getElementById("inputModal")
 var cancel_btn = document.getElementById("cancelBtn")
@@ -38,30 +83,35 @@ span.onclick = function() {
 }
 function send_data(value){
     body = {}
-    body["table_name"]= "company"
+    body["table_name"]= document.getElementById("tableOption").value;
     subbody = {}
     for (var j = 0; j < cols.length; j++){
         if (j == 0 & value.value == "insert"){
-            continue
+            if (!(document.getElementById("tableOption").value == "member_customer" || document.getElementById("tableOption").value == "employee"))
+                continue
         }
         input_val = $("#"+cols[j])
         subbody[input_val.attr('id')] = input_val.val()
     }
     body["data"] = subbody
+    console.log(body)
     var req = new XMLHttpRequest();
-    req.open("POST", "http://localhost:3000/"+value.value);
+    req.open("POST", ip+value.value);
     req.setRequestHeader("Access-Control-Allow-Origin", "*")
     req.setRequestHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
     req.setRequestHeader("Access-Control-Allow-Headers","X-PINGOTHER, Content-Type")
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     console.log(JSON.stringify(body))
     req.send(JSON.stringify(body));
-    console.log(req.status);
-    console.log(req.responseText);
+    req.onload = function () {
+        console.log(req);
+        console.log(req.responseText);
+    };
 }
 function detail_input(value){
     routes = value.name
     $("#confirmBtn").val(routes)
+    
     //console.log(routes)
     var id;
     if (routes == "update"){
@@ -89,7 +139,11 @@ function detail_input(value){
                 if (j == 0){
                     detail.disabled = true
                     if(routes != "update"){
-                        continue
+                        if (!(document.getElementById("tableOption").value == "member_customer" || document.getElementById("tableOption").value == "employee"))
+                            continue
+                        else{
+                            detail.disabled = false
+                        }
                     }
                 }
                 span_tag.className = "span-header"
@@ -116,14 +170,102 @@ function detail_input(value){
     }
     
 }
-
+function delete_row(value){
+    body = {}
+    body["table_name"]= document.getElementById("tableOption").value;
+    subbody = {}
+    subbody[cols[0]] = value.value
+    body["data"] = subbody
+    console.log(body)
+    var req = new XMLHttpRequest();
+    req.open("POST", ip+"delete");
+    req.setRequestHeader("Access-Control-Allow-Origin", "*")
+    req.setRequestHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+    req.setRequestHeader("Access-Control-Allow-Headers","X-PINGOTHER, Content-Type")
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    console.log(JSON.stringify(body))
+    req.send(JSON.stringify(body));
+    req.onload = function () {
+        console.log(req);
+        console.log(req.responseText);
+    };
+}
+function set_extra_table(table_data){
+    table_cols =[]
+    for (var i = 0; i < table_data.length; i++) { 
+        for (var k in table_data[i]) { 
+            if (table_cols.indexOf(k) === -1) { 
+                    
+                // Push all keys to the array 
+                table_cols.push(k); 
+            } 
+        } 
+    } 
+    var table = document.createElement("table"); 
+                
+    // Create table row tr element of a table 
+    var tr = table.insertRow(-1); 
+        
+    for (var i = 0; i < table_cols.length; i++) { 
+            
+        // Create the table header th element 
+        var theader = document.createElement("th"); 
+        theader.innerHTML = table_cols[i]; 
+            
+        // Append columnName to the table row 
+        tr.appendChild(theader); 
+    } 
+        
+    // Adding the data to the table 
+    for (var i = 0; i < table_data.length; i++) { 
+            
+        // Create a new row 
+        trow = table.insertRow(-1); 
+        for (var j = 0; j < table_cols.length; j++) { 
+            var cell = trow.insertCell(-1); 
+                
+            // Inserting the cell at particular place 
+            cell.innerHTML = table_data[i][table_cols[j]]; 
+        } 
+    } 
+    
+    // Add the newely created table containing json data 
+    var el = document.getElementById("table-detail"); 
+    el.innerHTML = ""; 
+    el.appendChild(table);
+}
+function get_extra_details(id, id2){
+    body = {}
+    body["table_name"]= document.getElementById("tableOption").value;
+    subbody = {}      
+    if (id2 != 0){
+        subbody["ID2"] = id2
+    }          
+    subbody["ID"] = id
+    body["data"] = subbody
+    console.log(body)
+    var req = new XMLHttpRequest();
+    req.open("POST", ip+"extra");
+    req.setRequestHeader("Access-Control-Allow-Origin", "*")
+    req.setRequestHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+    req.setRequestHeader("Access-Control-Allow-Headers","X-PINGOTHER, Content-Type")
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    console.log(JSON.stringify(body))
+    req.send(JSON.stringify(body));
+    req.onload = function () {
+        //console.log(req.responseText);
+        table_data = JSON.parse(req.responseText)[0] 
+        set_extra_table(table_data)
+    };
+    
+}
 // Get the button that opens the modal
 function show_details(value){
     id = value.children[0].innerHTML
     sub1 = document.getElementById("sub1");
     sub2 =  document.getElementById("sub2");
-    $("#updatebtn").val(id)
-    
+    $("#updateBtn").val(id)
+    $("#deleteBtn").val(id)
     for (var i = 0; i < list.length; i++){
         if (id == list[i][cols[0]]){
             modal.style.display = "block";
@@ -148,66 +290,37 @@ function show_details(value){
                 }
 
             } 
-            table_data = [{"COMPANY_ID":10,"COMPANY_NAME":"Shopee","REPRESENTATIVE_NAME":"Thinh","REPRESENTATIVE_CMND":"123456789","REPRESENTATIVE_PHONE":"0123456789","REPRESENTATIVE_EMAIL":"abc@abc","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Shopping"},{"COMPANY_ID":11,"COMPANY_NAME":"Lazada","REPRESENTATIVE_NAME":"Anh","REPRESENTATIVE_CMND":"123456788","REPRESENTATIVE_PHONE":"0123456788","REPRESENTATIVE_EMAIL":"abc@abc1","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Shopping"},{"COMPANY_ID":12,"COMPANY_NAME":"Viettin","REPRESENTATIVE_NAME":"Binh","REPRESENTATIVE_CMND":"123456787","REPRESENTATIVE_PHONE":"0123456787","REPRESENTATIVE_EMAIL":"abc@abc2","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Bank"},{"COMPANY_ID":13,"COMPANY_NAME":"Agri","REPRESENTATIVE_NAME":"Ngo","REPRESENTATIVE_CMND":"123456786","REPRESENTATIVE_PHONE":"0123456786","REPRESENTATIVE_EMAIL":"abc@abc3","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Bank"},{"COMPANY_ID":14,"COMPANY_NAME":"Kichi","REPRESENTATIVE_NAME":"Ga","REPRESENTATIVE_CMND":"123456785","REPRESENTATIVE_PHONE":"0123456785","REPRESENTATIVE_EMAIL":"abc@abc4","REPRESENTATIVE":"Building","BUSINESS_MODEL":"Full","BUSINESS_TYPE":"Food"}]
-            table_cols = []; 
-            for (var i = 0; i < table_data.length; i++) { 
-                for (var k in table_data[i]) { 
-                    if (table_cols.indexOf(k) === -1) { 
-                            
-                        // Push all keys to the array 
-                        table_cols.push(k); 
-                    } 
-                } 
-            } 
-
+            query = cols[0]
+            query1 = 0
+            if (document.getElementById("tableOption").value == "employee")
+            {
+                query = cols[7]
+            }    
+            else if (document.getElementById("tableOption").value == "product_service"){
+                query1 = list[i][cols[1]]
+            }
+            get_extra_details(list[i][query], query1)
             // Create a table element 
-            var table = document.createElement("table"); 
-                
-            // Create table row tr element of a table 
-            var tr = table.insertRow(-1); 
-                
-            for (var i = 0; i < table_cols.length; i++) { 
-                    
-                // Create the table header th element 
-                var theader = document.createElement("th"); 
-                theader.innerHTML = table_cols[i]; 
-                    
-                // Append columnName to the table row 
-                tr.appendChild(theader); 
-            } 
-                
-            // Adding the data to the table 
-            for (var i = 0; i < table_data.length; i++) { 
-                    
-                // Create a new row 
-                trow = table.insertRow(-1); 
-                for (var j = 0; j < table_cols.length; j++) { 
-                    var cell = trow.insertCell(-1); 
-                        
-                    // Inserting the cell at particular place 
-                    cell.innerHTML = table_data[i][table_cols[j]]; 
-                } 
-            } 
             
-            // Add the newely created table containing json data 
-            var el = document.getElementById("table-detail"); 
-            el.innerHTML = ""; 
-            el.appendChild(table);
         }
     }
       
 }
 
-function get_data(){
-    $('.loader').css("display", "inline")
-    $('.none-loader').css("display", "none")    
-    
-        
+function get_data(list){
+    for (var i = 0; i < list.length; i++) { 
+        for (var k in list[i]) { 
+            if (cols.indexOf(k) === -1) { 
+                // Push all keys to the array 
+                cols.push(k); 
+            } 
+        } 
+    }  
     // Create a table element 
-    var table = document.createElement("table"); 
+    table = document.createElement("table"); 
         
     // Create table row tr element of a table 
-    var tr = table.insertRow(-1); 
+    tr = table.insertRow(-1); 
         
     for (var i = 0; i < cols.length; i++) { 
             
@@ -225,12 +338,12 @@ function get_data(){
         // Create a new row 
         trow = table.insertRow(-1); 
         for (var j = 0; j < cols.length; j++) { 
-            var cell = trow.insertCell(-1); 
+            cell = trow.insertCell(-1); 
                 
             // Inserting the cell at particular place 
             cell.innerHTML = list[i][cols[j]]; 
         } 
-        var cell = trow.insertCell(-1);
+        cell = trow.insertCell(-1);
         button_more = document.createElement("button")
         button_more.innerHTML = "More"
         button_more.className = "tracking-btn"
@@ -242,13 +355,8 @@ function get_data(){
     var el = document.getElementById("table"); 
     el.innerHTML = ""; 
     el.appendChild(table);
+}
 
-    setTimeout(function(){ hide_loader(); } , 1000);
-}
-function hide_loader(){
-    $('.loader').css("display", "none")
-    $('.none-loader').css("display", "inline")
-}
 
 
 window.onclick = function(event) {

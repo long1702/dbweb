@@ -205,14 +205,13 @@ th, td {
 .modal-detail{
     display: flex;
     flex-direction: row;
-    align-items: center;
     justify-content: space-around;
 }
 .modal-sub-detail{
     display: flex;
     flex-direction: column;
     align-items: left;
-    justify-content: space-around;
+    justify-content: flex-end;
 }
 .detail{
     font-family: Roboto;

@@ -28,17 +28,17 @@
             <div class="content-header-container">
                 <div class="option-container">
                     <select name="table" id="tableOption">
-                        <option value="customer">Khách Hàng Thân Thiết</option>
+                        <option value="member_customer">Khách Hàng Thân Thiết</option>
                         <option value="company">Doanh Nghiệp</option>
                         <option value="employee">Nhân Viên</option>
                         <option value="product_service">Sản Phẩm</option>
                     </select>
                 </div>
                 <div class="input-container">
-                    <input id="order-input-id"type="text" name="order-code" placeholder="Nhập giá trị cần truy vấn">
+                    <input id="orderInput"type="text" name="order-code" placeholder="Nhập giá trị cần truy vấn">
                 </div>
                 <div>
-                    <button class="tracking-btn" type="button" onclick="get_data()">
+                    <button class="tracking-btn" type="button" onclick="get_table()">
                         <div class="loader"><i class="fa fa-circle-o-notch fa-spin"></i></div>
                         TRA CỨU
                     </button>
@@ -66,8 +66,8 @@
             </div>
             <table id="table-detail"></table>
             <div class="button-container">
-                <button class="tracking-btn" type="button">XÓA</button>
-                <button class="tracking-btn" type="button" id="updatebtn"name="update" value="" onclick="detail_input(this)">CẬP NHẬT</button>
+                <button class="tracking-btn" type="button" id="deleteBtn" name="update" value="" onclick="delete_row(this)">XÓA</button>
+                <button class="tracking-btn" type="button" id="updateBtn"name="update" value="" onclick="detail_input(this)">CẬP NHẬT</button>
             </div>
         </div>
     </div>
