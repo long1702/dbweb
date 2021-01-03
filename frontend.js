@@ -11,8 +11,16 @@ for (var i = 0; i < list.length; i++) {
 } 
 var modal = document.getElementById("myModal");
 var input_modal = document.getElementById("inputModal")
+var cancel_btn = document.getElementById("cancelBtn")
 var span = document.getElementsByClassName("close")[0];
 var up_add_span = document.getElementsByClassName("close")[1];
+cancel_btn.onclick = () => {
+    input_modal.style.display = "none";
+    inputsub1 = document.getElementById("inputsub1");
+    inputsub2 =  document.getElementById("inputsub2");
+    inputsub1.innerHTML =""
+    inputsub2.innerHTML =""
+}
 up_add_span.onclick = function(){
     input_modal.style.display = "none";
     inputsub1 = document.getElementById("inputsub1");
@@ -27,10 +35,33 @@ span.onclick = function() {
     sub2 =  document.getElementById("sub2");
     sub1.innerHTML =""
     sub2.innerHTML =""
-    
+}
+function send_data(value){
+    body = {}
+    body["table_name"]= "company"
+    subbody = {}
+    for (var j = 0; j < cols.length; j++){
+        if (j == 0 & value.value == "insert"){
+            continue
+        }
+        input_val = $("#"+cols[j])
+        subbody[input_val.attr('id')] = input_val.val()
+    }
+    body["data"] = subbody
+    var req = new XMLHttpRequest();
+    req.open("POST", "http://localhost:3000/"+value.value);
+    req.setRequestHeader("Access-Control-Allow-Origin", "*")
+    req.setRequestHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+    req.setRequestHeader("Access-Control-Allow-Headers","X-PINGOTHER, Content-Type")
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    console.log(JSON.stringify(body))
+    req.send(JSON.stringify(body));
+    console.log(req.status);
+    console.log(req.responseText);
 }
 function detail_input(value){
     routes = value.name
+    $("#confirmBtn").val(routes)
     //console.log(routes)
     var id;
     if (routes == "update"){
@@ -47,7 +78,6 @@ function detail_input(value){
     //console.log(id)
     sub1 = document.getElementById("inputsub1");
     sub2 =  document.getElementById("inputsub2");
-    $("#confirmbtn").val(id)
     for (var i = 0; i < list.length; i++){
         if (id == list[i][cols[0]]){
             modal.style.display = "none";
@@ -88,7 +118,6 @@ function detail_input(value){
 }
 
 // Get the button that opens the modal
-var btn = document.getElementById("historybtn");
 function show_details(value){
     id = value.children[0].innerHTML
     sub1 = document.getElementById("sub1");

@@ -48,8 +48,7 @@
         </div>
         <table id="table"></table>
         <div class="button">
-            <button class="tracking-btn" id="addbtn" type="button" name="add" value="" onclick="detail_input(this)">
-                <div class="loader"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+            <button class="tracking-btn" id="addbtn" type="button" name="insert" value="" onclick="detail_input(this)">
                 THÊM
             </button>
         </div>
@@ -82,10 +81,9 @@
                 <div class="modal-sub-detail" id="inputsub1"></div>
                 <div class="modal-sub-detail" id="inputsub2"></div>
             </div>
-            <table id="table-detail"></table>
             <div class="button-container">
-                <button class="tracking-btn" type="button">HỦY</button>
-                <button class="tracking-btn" type="button"id="confirmbtn" value="yes" onclick="">XÁC NHẬN</button>
+                <button class="tracking-btn" type="button" id="cancelBtn">HỦY</button>
+                <button class="tracking-btn" type="button"id="confirmBtn" value="" onclick="send_data(this)">XÁC NHẬN</button>
             </div>
         </div>
     </div>
