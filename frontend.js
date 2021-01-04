@@ -41,7 +41,7 @@ function get_table(){
     console.log(JSON.stringify(body))
     req.send(JSON.stringify(body));
     req.onload = function () {
-        console.log(req);
+        console.log(req.status);
         console.log(JSON.parse(req.responseText));
         list = JSON.parse(req.responseText)[0] 
         get_data(list)
@@ -104,8 +104,13 @@ function send_data(value){
     console.log(JSON.stringify(body))
     req.send(JSON.stringify(body));
     req.onload = function () {
-        console.log(req);
-        console.log(req.responseText);
+        console.log(req.status)
+        if (req.status == 200){
+            alert("Thành Công")
+        }
+        else{
+            alert("Đã xảy ra lỗi vui lòng thử lại")
+        }
     };
 }
 function detail_input(value){
@@ -186,8 +191,13 @@ function delete_row(value){
     console.log(JSON.stringify(body))
     req.send(JSON.stringify(body));
     req.onload = function () {
-        console.log(req);
-        console.log(req.responseText);
+        console.log(req.status)
+        if (req.status == 200){
+            alert("Thành Công")
+        }
+        else{
+            alert("Đã xảy ra lỗi vui lòng thử lại")
+        }
     };
 }
 function set_extra_table(table_data){
@@ -301,7 +311,6 @@ function show_details(value){
             }
             get_extra_details(list[i][query], query1)
             // Create a table element 
-            
         }
     }
       
